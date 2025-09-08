@@ -28,13 +28,13 @@ class TaskCreate(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class TaskGetById(APIView):
-    def get (self, request, pk):
+    def get (self, request, pk: int) -> Response:
         task = get_task_by_id(pk)
         serializer = TaskSerializer(task)
         return Response (serializer.data, status=status.HTTP_200_OK)
 
 class TaskUpdate(APIView):
-    def put(self, request, pk):
+    def put(self, request, pk: int) -> Response:
         task = get_task_by_id(pk)
         serializer =TaskSerializer(task, data= request.data)
         if(serializer.is_valid()):
@@ -43,7 +43,7 @@ class TaskUpdate(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class TaskDelete(APIView):
-    def delete(self, request, pk):
+    def delete(self, request, pk: int) -> Response:
         task = get_task_by_id(pk)
         delete_task(task)
         return Response(status=status.HTTP_204_NO_CONTENT)
