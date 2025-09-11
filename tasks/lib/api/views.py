@@ -7,7 +7,7 @@ from tasks.lib.serializers.serializer import TaskSerializer
 from django.shortcuts import get_object_or_404
 from tasks.lib.services.task_service import (get_all_tasks, get_task_by_id, create_task, update_task, delete_task)
 
-from tasks.lib.api.models import Tasks
+from tasks.models import Tasks
 
 
 class TaskList(APIView):
@@ -28,23 +28,31 @@ class TaskCreate(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class TaskGetById(APIView):
-    def get (self, request, pk: int) -> Response:
-        task = get_task_by_id(pk)
+    def get (self, request, task_id: int) -> Response:
+        task = get_task_by_id(task_id)
         serializer = TaskSerializer(task)
         return Response (serializer.data, status=status.HTTP_200_OK)
 
 class TaskUpdate(APIView):
-    def put(self, request, pk: int) -> Response:
-        task = get_task_by_id(pk)
-        serializer =TaskSerializer(task, data= request.data)
+    def put(self, request, task_id: int) -> Response:
+        task = get_task_by_id(task_id)
+        serializer =TaskSerializer(task, data= request.data, partial= True)
         if(serializer.is_valid()):
             update = update_task(task, serializer.validated_data)
-            return Response(TaskSerializer(update).data, status=status.HTTP_201_CREATED)
+            return Response(TaskSerializer(update).data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def patch(self, request, task_id: int) -> Response:
+        task = get_task_by_id(task_id)
+        serializer = TaskSerializer(task, data=request.data, partial=True)
+        if serializer.is_valid():
+            update = update_task(task, serializer.validated_data)
+            return Response(TaskSerializer(update).data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class TaskDelete(APIView):
-    def delete(self, request, pk: int) -> Response:
-        task = get_task_by_id(pk)
+    def delete(self, request, task_id: int) -> Response:
+        task = get_task_by_id(task_id)
         delete_task(task)
         return Response(status=status.HTTP_204_NO_CONTENT)
 

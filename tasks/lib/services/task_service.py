@@ -1,4 +1,4 @@
-from tasks.lib.api.models import Tasks
+from tasks.models import Tasks
 from django.shortcuts import get_object_or_404
 
 def get_all_tasks():

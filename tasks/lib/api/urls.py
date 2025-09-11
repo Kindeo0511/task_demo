@@ -5,8 +5,8 @@ urlpatterns = [
     
     path('tasks/', TaskList.as_view(), name='task-list'),
     path('tasks/create', TaskCreate.as_view(), name='task-create'),
-    path('tasks/<int:pk>/', TaskGetById.as_view(), name='task-retrieve'),
-    path('tasks/update/<int:pk>/', TaskUpdate.as_view(), name='task-update'),
-    path('tasks/delete/<int:pk>/', TaskDelete.as_view(), name='task-delete')
+    path('tasks/<int:task_id>/', TaskGetById.as_view(), name='task-retrieve'),
+    path('tasks/update/<int:task_id>/', TaskUpdate.as_view(), name='task-update'),
+    path('tasks/delete/<int:task_id>/', TaskDelete.as_view(), name='task-delete')
 
 ]
