@@ -36,7 +36,7 @@ class TaskGetById(APIView):
 class TaskUpdate(APIView):
     def put(self, request, task_id: int) -> Response:
         task = get_task_by_id(task_id)
-        serializer =TaskSerializer(task, data= request.data, partial= True)
+        serializer =TaskSerializer(task, data= request.data)
         if(serializer.is_valid()):
             update = update_task(task, serializer.validated_data)
             return Response(TaskSerializer(update).data, status=status.HTTP_200_OK)
