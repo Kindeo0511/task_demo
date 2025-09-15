@@ -7,6 +7,7 @@ name = "pypi"
 djangorestframework = "*"
 psycopg2-binary = "*"
 pytest-django = "*"
+drf-spectacular = "*"
 
 [dev-packages]
 pytest = "*"

@@ -6,6 +6,7 @@ from rest_framework import status
 from tasks.lib.serializers.serializer import TaskSerializer
 from django.shortcuts import get_object_or_404
 from tasks.lib.services.task_service import (get_all_tasks, get_task_by_id, create_task, update_task, delete_task)
+from drf_spectacular.utils import extend_schema
 
 from tasks.models import Tasks
 
@@ -19,6 +20,12 @@ class TaskList(APIView):
 
 
 class TaskCreate(APIView):
+    @extend_schema(
+            request=TaskSerializer,
+            responses=TaskSerializer,
+            summary="Create a new task",
+            description="Accepts task data and returns the created task."
+        )
 
     def post(self, request: Request) -> Response:
         serializer = TaskSerializer(data = request.data)
@@ -34,6 +41,14 @@ class TaskGetById(APIView):
         return Response (serializer.data, status=status.HTTP_200_OK)
 
 class TaskUpdate(APIView):
+    @extend_schema(
+            request=TaskSerializer,
+            responses=TaskSerializer,
+            summary="Fully update a task",
+            description="Replaces all fields of a task with new data."
+        )
+
+
     def put(self, request, task_id: int) -> Response:
         task = get_task_by_id(task_id)
         serializer =TaskSerializer(task, data= request.data)
@@ -42,6 +57,13 @@ class TaskUpdate(APIView):
             return Response(TaskSerializer(update).data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+    @extend_schema(
+        request=TaskSerializer,
+        responses=TaskSerializer,
+        summary="Partially update a task",
+        description="Updates only the provided fields of a task."
+    )
+
     def patch(self, request, task_id: int) -> Response:
         task = get_task_by_id(task_id)
         serializer = TaskSerializer(task, data=request.data, partial=True)
